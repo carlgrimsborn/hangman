@@ -3,25 +3,13 @@ from PIL import ImageTk, Image
 from tkinter import messagebox
 import random
 from collections import Counter
+from word_data import word_data
 
 root = Tk()
 root.title("Hangman")
 
-word_list = [
-    "cat",
-    "dog",
-    "giraffe",
-    "car",
-    "road",
-    "computer",
-    "keyboard",
-    "pizza",
-    "island",
-    "country",
-    "car",
-]
+word_list = word_data
 game_word = random.choice(word_list)
-print(game_word)
 correct_guessed_dict = {}
 prev_correct_words = []
 
@@ -60,8 +48,6 @@ def validate_guess(input_value):
         game_word[i] == input_value[i]
         for i in range(min(len(game_word), len(input_value)))
     )
-    print("input_value", input_value)
-    print(input_index_correct)
     if input_index_correct:
         set_guessed_dict(input_value)
         return True
@@ -113,7 +99,6 @@ def submit():
 
     input_value = user_input.get().lower()
     correct_guess = validate_guess(input_value)
-    print("correct_guess", correct_guess)
 
     if correct_guess == False:
         root.update_idletasks()
