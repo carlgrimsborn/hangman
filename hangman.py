@@ -19,11 +19,10 @@ word_list = [
     "island",
     "country",
     "car",
-    "aadddsssssppgh",
-    "dsdsppppp",
 ]
 game_word = random.choice(word_list)
 correct_guessed_dict = {}
+prev_correct_words = []
 
 hangman_img = ImageTk.PhotoImage(Image.open("images/hangman1.png"))
 imgLabel = Label(image=hangman_img)
@@ -34,7 +33,7 @@ number_of_guesses = 0
 user_input = StringVar()
 
 
-def valuate_win():
+def validate_win():
     global correct_guessed_dict
     global game_word
 
@@ -50,7 +49,7 @@ def set_guessed_dict(str):
     print(correct_guessed_dict)
 
 
-def valuate_guess(guess_str):
+def validate_guess(guess_str):
     global correct_guessed_dict
 
     for c in correct_guessed_dict.keys():
@@ -66,11 +65,22 @@ def game_over(completed):
     global correct_guessed_dict
     global word_list
     global middle_frame
+    global prev_correct_words
+    global completed_lbl
+    global completed_words_text
 
+    print("game_word", game_word)
     if completed:
         messagebox.showinfo("Game Completed!", "Congrats. You guessed the right word")
+        prev_correct_words.append(game_word)
+        completed_words_text = ", ".join(prev_correct_words)
+        completed_lbl = Label(
+            root, text="Completed words: " + completed_words_text
+        ).grid(row=3, column=0)
     else:
-        messagebox.showinfo("Game Over", "Your game is over, try again")
+        messagebox.showinfo(
+            "Game Over", "Your game is over, try again. Right word was: " + game_word
+        )
 
     game_word = random.choice(word_list)
     correct_guessed_dict = {}
@@ -92,7 +102,7 @@ def submit():
 
     input_value = user_input.get()
     set_guessed_dict(input_value)
-    correct_guess = valuate_guess(input_value)
+    correct_guess = validate_guess(input_value)
 
     if correct_guess == False:
         root.update_idletasks()
@@ -106,7 +116,7 @@ def submit():
     renderLabels()
 
     user_input.set("")
-    completed_game = valuate_win()
+    completed_game = validate_win()
 
     if completed_game:
         root.update_idletasks()
