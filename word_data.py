@@ -9,7 +9,6 @@ word_data = [
     "pizza",
     "island",
     "country",
-    "car",
     "ocean",
     "banana",
     "guitar",

@@ -12,7 +12,7 @@ word_list = word_data
 game_word = random.choice(word_list)
 correct_guessed_dict = {}
 prev_correct_words = []
-# print("cheat:", game_word)
+print("cheat:", game_word)
 
 hangman_img = ImageTk.PhotoImage(Image.open("images/hangman1.png"))
 imgLabel = Label(image=hangman_img)
@@ -40,6 +40,17 @@ def set_guessed_dict(inp_str):
     for c in inp_str:
         if c in game_word:
             correct_guessed_dict[c] = game_word.count(c)
+
+
+def validate_guess(input_value):
+    global correct_guessed_dict
+
+    input_index_correct = any(
+        game_word[i] == input_value[i]
+        for i in range(min(len(game_word), len(input_value)))
+    )
+    if input_index_correct:
+        set_guessed_dict(input_value)
 
 
 def game_over(completed):
@@ -85,6 +96,7 @@ def submit():
     global correct_guessed_dict
 
     input_value = user_input.get().lower()
+    validate_guess(input_value)
 
     number_of_guesses += 1
     completed_game = validate_win(input_value)
@@ -133,10 +145,7 @@ def renderLabels():
 renderLabels()
 
 bottom_frame = Frame(root, padx=10, pady=10)
-bottom_frame.grid(row=2, column=0, sticky="nsew")
-bottom_frame.grid_columnconfigure(0, weight=1)
-bottom_frame.grid_columnconfigure(1, weight=1)
-bottom_frame.grid_columnconfigure(2, weight=1)
+bottom_frame.grid(row=2, column=0)
 
 label = Label(bottom_frame, text="Enter your guess")
 entry = Entry(bottom_frame, textvariable=user_input)
