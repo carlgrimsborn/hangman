@@ -12,7 +12,7 @@ word_list = word_data
 game_word = random.choice(word_list)
 correct_guessed_dict = {}
 prev_correct_words = []
-print("cheat:", game_word)
+# print("cheat:", game_word)
 
 hangman_img = ImageTk.PhotoImage(Image.open("images/hangman1.png"))
 imgLabel = Label(image=hangman_img)
