@@ -21,6 +21,7 @@ word_list = [
     "car",
 ]
 game_word = random.choice(word_list)
+print(game_word)
 correct_guessed_dict = {}
 prev_correct_words = []
 
@@ -33,29 +34,39 @@ number_of_guesses = 0
 user_input = StringVar()
 
 
-def validate_win():
+def validate_win(input_val):
     global correct_guessed_dict
     global game_word
 
     game_word_counter = Counter(game_word)
-    return game_word_counter == correct_guessed_dict
+    matching_guessed_chars_dict = game_word_counter == correct_guessed_dict
+    exact_match = game_word == input_val
+    if matching_guessed_chars_dict and exact_match:
+        return True
+    else:
+        return False
 
 
-def set_guessed_dict(str):
-    global correct_guessed_dict
-    for c in str:
+def set_guessed_dict(inp_str):
+    for c in inp_str:
         if c in game_word:
             correct_guessed_dict[c] = game_word.count(c)
-    print(correct_guessed_dict)
 
 
-def validate_guess(guess_str):
+def validate_guess(input_value):
     global correct_guessed_dict
 
-    for c in correct_guessed_dict.keys():
-        if c in guess_str:
-            return True
-    return False
+    input_index_correct = any(
+        game_word[i] == input_value[i]
+        for i in range(min(len(game_word), len(input_value)))
+    )
+    print("input_value", input_value)
+    print(input_index_correct)
+    if input_index_correct:
+        set_guessed_dict(input_value)
+        return True
+    else:
+        return False
 
 
 def game_over(completed):
@@ -67,11 +78,11 @@ def game_over(completed):
     global middle_frame
     global prev_correct_words
     global completed_lbl
-    global completed_words_text
 
-    print("game_word", game_word)
     if completed:
-        messagebox.showinfo("Game Completed!", "Congrats. You guessed the right word")
+        messagebox.showinfo(
+            "Game Completed!", "Congratulations. You guessed the right word"
+        )
         prev_correct_words.append(game_word)
         completed_words_text = ", ".join(prev_correct_words)
         completed_lbl = Label(
@@ -100,9 +111,9 @@ def submit():
     global hangman_img
     global correct_guessed_dict
 
-    input_value = user_input.get()
-    set_guessed_dict(input_value)
+    input_value = user_input.get().lower()
     correct_guess = validate_guess(input_value)
+    print("correct_guess", correct_guess)
 
     if correct_guess == False:
         root.update_idletasks()
@@ -116,7 +127,7 @@ def submit():
     renderLabels()
 
     user_input.set("")
-    completed_game = validate_win()
+    completed_game = validate_win(input_value)
 
     if completed_game:
         root.update_idletasks()
@@ -152,6 +163,9 @@ renderLabels()
 
 bottom_frame = Frame(root, padx=10, pady=10)
 bottom_frame.grid(row=2, column=0, sticky="nsew")
+bottom_frame.grid_columnconfigure(0, weight=1)
+bottom_frame.grid_columnconfigure(1, weight=1)
+bottom_frame.grid_columnconfigure(2, weight=1)
 
 label = Label(bottom_frame, text="Enter your guess")
 entry = Entry(bottom_frame, textvariable=user_input)
